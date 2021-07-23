@@ -21,6 +21,7 @@ def parse_args():
     p.add_argument("-o", dest="output", required=True, help="AFL output directory")
     p.add_argument("-a", dest="afl", required=True, help="AFL name")
     p.add_argument("-n", dest="name", required=True, help="Qsym name")
+    p.add_argument("-g", dest="cfg", default=None)
     p.add_argument("-f", dest="filename", default=None)
     p.add_argument("-m", dest="mail", default=None)
     p.add_argument("-b", dest="asan_bin", default=None)

@@ -83,7 +83,8 @@ inline bool isEqual(ExprRef e, bool taken) {
 Solver::Solver(
     const std::string input_file,
     const std::string out_dir,
-    const std::string bitmap)
+    const std::string bitmap,
+    const std::string cfg)
   : input_file_(input_file)
   , inputs_()
   , out_dir_(out_dir)

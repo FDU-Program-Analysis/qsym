@@ -117,7 +117,7 @@ class AFLExecutorState(object):
         return len(self.processed) + len(self.hang) + len(self.done)
 
 class AFLExecutor(object):
-    def __init__(self, cmd, output, afl, name, filename=None, mail=None, asan_bin=None):
+    def __init__(self, cmd, output, afl, name, filename=None, mail=None, asan_bin=None, cfg=None):
         self.cmd = cmd
         self.output = output
         self.afl = afl
@@ -125,6 +125,7 @@ class AFLExecutor(object):
         self.filename = ".cur_input" if filename is None else filename
         self.mail = mail
         self.set_asan_cmd(asan_bin)
+        self.cfg = cfg
 
         self.tmp_dir = tempfile.mkdtemp()
         cmd, afl_path, qemu_mode = self.parse_fuzzer_stats()
