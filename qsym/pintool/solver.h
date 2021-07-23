@@ -13,6 +13,7 @@
 #include "expr.h"
 #include "thread_context.h"
 #include "dependency.h"
+#include "cfg.h"
 
 namespace qsym {
 
@@ -62,6 +63,7 @@ protected:
   uint64_t              solving_time_;
   ADDRINT               last_pc_;
   DependencyForest<Expr> dep_forest_;
+  CFG                   cfg_;
 
   void checkOutDir();
   void readInput();

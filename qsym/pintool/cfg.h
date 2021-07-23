@@ -28,15 +28,26 @@ typedef bo::graph_traits<graph_t>::vertex_descriptor vertex_desc;
 typedef bo::graph_traits<graph_t>::edge_descriptor edge_desc;
 /* End definitions */
 
-class cfg {
+class CFG {
 
 private:
   std::string path_;
   graph_t graph_;
 
 public:
-  cfg(const std::string path);
+  CFG(const std::string path);
   //~cfg();
+
+  // Check whether the node is stateful node
+  bool isStateNode(vertex_desc vd);
+
+  // Check whether the node is state-related node,s
+  // (i.e. the node has at least one path to a stateful node)
+  bool isStateRelated(ADDRINT addr);
+
+  // Find a node by address, return the vertex_desc of the node in CFG.
+  // If there is no such node, return -1 represent this node is not exist.
+  vertex_desc findNode(ADDRINT addr);
 };
 
 } // namespace qsym

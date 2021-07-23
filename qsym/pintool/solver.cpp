@@ -98,6 +98,7 @@ Solver::Solver(
   , solving_time_(0)
   , last_pc_(0)
   , dep_forest_()
+  , cfg_(cfg)
 {
   // Set timeout for solver
   z3::params p(context_);
