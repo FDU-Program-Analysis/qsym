@@ -14,7 +14,7 @@ namespace bo = boost;
 
 /* Definations needed in using boost graph library */
 struct Vertex {
-  std::string name, label, shape, comment; // addres is stored in comment attribute
+  std::string name, label, shape, comment; // block address is stored in comment attribute
 };
 
 struct Edge {
@@ -41,7 +41,7 @@ public:
   // Check whether the node is stateful node
   bool isStateNode(vertex_desc vd);
 
-  // Check whether the node is state-related node,s
+  // Check whether the node is state-related node,
   // (i.e. the node has at least one path to a stateful node)
   bool isStateRelated(ADDRINT addr);
 

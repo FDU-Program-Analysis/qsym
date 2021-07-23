@@ -47,6 +47,7 @@ public:
   UINT8 getInput(ADDRINT index);
 
   ADDRINT last_pc() { return last_pc_; }
+  void setBBFirstAddr(ADDRINT first_addr);
 
 protected:
   std::string           input_file_;
@@ -64,6 +65,7 @@ protected:
   ADDRINT               last_pc_;
   DependencyForest<Expr> dep_forest_;
   CFG                   cfg_;
+  ADDRINT               cur_bb_first_addr_;
 
   void checkOutDir();
   void readInput();

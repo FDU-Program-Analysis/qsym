@@ -12,6 +12,13 @@ void instrumentBBL(
     ThreadContext *thread_ctx,
     const CONTEXT* ctx) {
   g_call_stack_manager.visitBasicBlock(PIN_GetContextReg(ctx, REG_INST_PTR));
+
+  // Record evert basicblock first instruction address
+  ADDRINT addr = PIN_GetContextReg(ctx, REG_INST_PTR);
+  if (addr < 0x700000000000) { // skip shared libs
+    LOG_DEBUG("BB addr: " + hexstr(addr) + "\n");
+    g_solver->setBBFirstAddr(addr);
+  }
 }
 
 void concretizeReg(

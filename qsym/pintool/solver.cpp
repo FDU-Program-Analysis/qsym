@@ -544,4 +544,8 @@ void Solver::checkFeasible() {
 #endif
 }
 
+void Solver::setBBFirstAddr(ADDRINT first_addr) {
+  cur_bb_first_addr_ = first_addr;
+}
+
 } // namespace qsym
