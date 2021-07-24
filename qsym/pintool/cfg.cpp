@@ -59,7 +59,7 @@ bool CFG::isStateRelated(ADDRINT addr) {
   // BFS search, if there is at least one path lead to stateful node,
   // the node is considerated as state-related node.
   std::queue<vertex_desc> q;
-  std::unordered_set<edge_desc, hash_Edges> edge_mem_set;
+  std::unordered_set<edge_desc, edge_desc_hash> edge_mem_set;
   bo::graph_traits<graph_t>::out_edge_iterator out_i, out_end;
   edge_desc e;
   q.push(node);
