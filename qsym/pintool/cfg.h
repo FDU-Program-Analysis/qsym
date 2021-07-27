@@ -51,7 +51,7 @@ public:
 };
 
 struct edge_desc_hash {
-  size_t operator()(const edge_desc &e) const {
+  size_t operator()(const edge_desc &edge) const {
     hash<string> hs;
     std::string key = std::to_string(edge.m_source) + std::to_string(edge.m_target);
     return hs(key);

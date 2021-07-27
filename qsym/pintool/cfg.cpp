@@ -52,8 +52,8 @@ bool CFG::isStateRelated(ADDRINT addr) {
   if (map_it != cache_map_.end()) return map_it->second;
 
   if (node == (vertex_desc)-1) {
-    cache_map_.emplace(addr, false);
-    return false;
+    cache_map_.emplace(addr, true);
+    return true;
   }
 
   // BFS search, if there is at least one path lead to stateful node,
@@ -75,7 +75,7 @@ bool CFG::isStateRelated(ADDRINT addr) {
       edge_mem_set.insert(e);
 
       vertex_desc dest = target(e, graph_);
-      if (isState(dest)) {
+      if (isStateNode(dest)) {
         cache_map_.emplace(addr, true);
         return true;
       }
