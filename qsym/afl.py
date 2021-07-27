@@ -31,8 +31,10 @@ MIN_HANG_FILES = 30
 logger = logging.getLogger('qsym.afl')
 
 def get_score(testcase):
-    # New coverage is the best
-    score1 = testcase.endswith("+cov")
+    # New state coverage is the best
+    score0 = testcase.endwith("state")
+    # New coverage is the suboptimal
+    score1 = "+cov" in testcase
     # NOTE: seed files are not marked with "+cov"
     # even though it contains new coverage
     score2 = "orig:" in testcase
@@ -40,7 +42,7 @@ def get_score(testcase):
     score3 = -os.path.getsize(testcase)
     # Since name contains id, so later generated one will be chosen earlier
     score4 = testcase
-    return (score1, score2, score3, score4)
+    return (score0 ,score1, score2, score3, score4)
 
 def testcase_compare(a, b):
     a_score = get_score(a)
