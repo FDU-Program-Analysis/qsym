@@ -1,9 +1,10 @@
 import os
+import argparse
 import subprocess
 
 PIN = "/qsym/third_party/pin-2.14-71313-gcc.4.4.7-linux/pin.sh"
 PINTOOL_DIR = "/qsym/qsym/pintool"
-INPUT = "/qsym/output/not_kitty.jpg"
+INPUT = "/qsym/output/in"
 
 SO = {
     "intel64": os.path.join(PINTOOL_DIR, "obj-intel64/libqsym.so"),
@@ -28,12 +29,18 @@ def gen_cmd(timeout):
     cmd += ["-o", "/tmp"]
     cmd += ["-l", "1"]
 
-    cmd += ["-b", "/qsym/output/bitmap"]
+    cmd += ["-b", "/qsym/output/bitmap"] #
     cmd += ["-z", "/qsym/output/jpeg-9d/new_cfg.dot"]
     cmd += ["-d", "1"]
-    return cmd + ["--"] + ["/qsym/output/jpeg-9d/build/djpeg-normal", INPUT]
+    return cmd + ["--"] + ["/qsym/output/jpeg-9d/djpeg-normal", INPUT]
 
 def main():
+    global INPUT
+    p = argparse.ArgumentParser()
+    p.add_argument("-s", dest="seed", required=True, help="pass the seed")
+    args = p.parse_args()
+    seed = args.seed
+    INPUT = os.path.join(INPUT, seed)
     cmd = gen_cmd(90)
     print(cmd)
     proc = subprocess.call(cmd)
