@@ -514,8 +514,13 @@ bool Solver::isInterestingJcc(ExprRef rel_expr, bool taken, ADDRINT pc) {
   bool interesting = trace_.isInterestingBranch(pc, taken);
 
   // The block must meet 2 condition: 1)never solved before 2)is state-related.
-  if (interesting && cfg_.isStateRelated(cur_bb_first_addr_)) interesting = true;
-  else interesting = false;
+  if (interesting) {
+    bool state_related = cfg_.isStateRelated(cur_bb_first_addr_);
+    LOG_INFO("state related: " + std::to_string(state_related) + "\n");
+    
+    if (state_related) interesting = true;
+    else interesting = false;
+  }
   
   // record for other decision
   last_interested_ = interesting;
