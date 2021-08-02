@@ -37,7 +37,7 @@ def main():
     check_args(args)
 
     e = qsym.afl.AFLExecutor(args.cmd, args.output, args.afl,
-            args.name, args.filename, args.mail, args.asan_bin)
+            args.name, args.filename, args.mail, args.asan_bin, args.cfg)
     try:
         e.run()
     finally:

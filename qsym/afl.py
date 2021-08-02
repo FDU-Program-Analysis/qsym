@@ -32,7 +32,7 @@ logger = logging.getLogger('qsym.afl')
 
 def get_score(testcase):
     # New state coverage is the best
-    score0 = testcase.endwith("state")
+    score0 = testcase.endswith("state")
     # New coverage is the suboptimal
     score1 = "+cov" in testcase
     # NOTE: seed files are not marked with "+cov"
@@ -131,6 +131,8 @@ class AFLExecutor(object):
 
         self.tmp_dir = tempfile.mkdtemp()
         cmd, afl_path, qemu_mode = self.parse_fuzzer_stats()
+        afl_path = "/afl"
+        cmd = ["/qsym/output/jpeg-9d/djpeg-afl", "@@"]
         self.minimizer = minimizer.TestcaseMinimizer(
             cmd, afl_path, self.output, qemu_mode)
         self.import_state()
@@ -223,7 +225,7 @@ class AFLExecutor(object):
 
     def run_target(self):
         # Trigger linearlize to remove complicate expressions
-        q = executor.Executor(self.cmd, self.cur_input, self.tmp_dir, bitmap=self.bitmap, argv=["-l", "1"])
+        q = executor.Executor(self.cmd, self.cur_input, self.tmp_dir, bitmap=self.bitmap, argv=["-l", "1"], cfg=self.cfg)
         ret = q.run(self.state.timeout)
         logger.debug("Total=%d s, Emulation=%d s, Solver=%d s, Return=%d"
                      % (ret.total_time,
