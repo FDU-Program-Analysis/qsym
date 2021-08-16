@@ -1,12 +1,12 @@
 #!/bin/bash
 
-DIR="/qsym/output"
+DIR="/work/qsym/output"
 PROG="$DIR/build/djpeg-labyrinth"
 PROG_NORMAL="$DIR/jpeg-9d/djpeg-normal"
 SEED="$DIR/in"
 OUTPUT="$DIR/out"
 CMD="@@"
-CFG_FILE="$DIR/jpeg-9d/new_cfg.dot"
+CFG_FILE="$DIR/temp/dot-files/new_cfg.dot"
 
 if [ $1 == "M" ]; then
 	/afl/afl-fuzz -t 1000+ -m none -M afl-master -c 5h -i $SEED -o $OUTPUT -- $PROG $CMD &

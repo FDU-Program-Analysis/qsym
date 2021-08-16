@@ -131,8 +131,15 @@ class AFLExecutor(object):
 
         self.tmp_dir = tempfile.mkdtemp()
         cmd, afl_path, qemu_mode = self.parse_fuzzer_stats()
+
+        # Becasue of the differences of environment, labyrinth and QSYM cannot be run in same environment.
+        # For convenience, all experiment will run in docker.
+        # So deduplication of new testcases will be carried out by origin AFL.
         afl_path = "/afl"
-        cmd = ["/qsym/output/jpeg-9d/djpeg-afl", "@@"]
+        string = cmd[0]
+        string = string.replaec("laby", "afl")
+        cmd[0] = string
+        
         self.minimizer = minimizer.TestcaseMinimizer(
             cmd, afl_path, self.output, qemu_mode)
         self.import_state()
