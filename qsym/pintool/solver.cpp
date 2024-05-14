@@ -83,7 +83,8 @@ inline bool isEqual(ExprRef e, bool taken) {
 Solver::Solver(
     const std::string input_file,
     const std::string out_dir,
-    const std::string bitmap)
+    const std::string bitmap,
+    const std::string cfg)
   : input_file_(input_file)
   , inputs_()
   , out_dir_(out_dir)
@@ -97,6 +98,7 @@ Solver::Solver(
   , solving_time_(0)
   , last_pc_(0)
   , dep_forest_()
+  , cfg_(cfg)
 {
   // Set timeout for solver
   z3::params p(context_);
@@ -510,6 +512,16 @@ ExprRef Solver::getRangeConstraint(ExprRef e, bool is_unsigned) {
 
 bool Solver::isInterestingJcc(ExprRef rel_expr, bool taken, ADDRINT pc) {
   bool interesting = trace_.isInterestingBranch(pc, taken);
+
+  // The block must meet 2 condition: 1)never solved before 2)is state-related.
+  if (interesting) {
+    bool state_related = cfg_.isStateRelated(cur_bb_first_addr_);
+    LOG_INFO("state related: " + std::to_string(state_related) + "\n");
+    
+    if (state_related) interesting = true;
+    else interesting = false;
+  }
+  
   // record for other decision
   last_interested_ = interesting;
   return interesting;
@@ -540,6 +552,10 @@ void Solver::checkFeasible() {
   if (check() == z3::unsat)
     LOG_FATAL("Infeasible constraints: " + solver_.to_smt2() + "\n");
 #endif
+}
+
+void Solver::setBBFirstAddr(ADDRINT first_addr) {
+  cur_bb_first_addr_ = first_addr;
 }
 
 } // namespace qsym

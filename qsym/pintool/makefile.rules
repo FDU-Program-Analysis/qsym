@@ -64,9 +64,9 @@ ifeq ($(shell lsb_release -sr), 16.04)
   TOOL_CXXFLAGS += -fabi-version=2 -D_GLIBCXX_USE_CXX11_ABI=0
 endif
 
-TOOL_CXXFLAGS += -I$(CURDIR)
+TOOL_CXXFLAGS += -I$(CURDIR) -Wno-deprecated
 TOOL_CXXFLAGS += -g -Wno-error=unused-function -std=c++11 -DCONFIG_CONTEXT_SENSITIVE
-TOOL_LIBS += -lz3
+TOOL_LIBS += -lz3 -lboost_graph
 
 ##############################################################
 #

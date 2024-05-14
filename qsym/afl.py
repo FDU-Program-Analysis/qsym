@@ -31,8 +31,10 @@ MIN_HANG_FILES = 30
 logger = logging.getLogger('qsym.afl')
 
 def get_score(testcase):
-    # New coverage is the best
-    score1 = testcase.endswith("+cov")
+    # New state coverage is the best
+    score0 = testcase.endswith("state")
+    # New coverage is the suboptimal
+    score1 = "+cov" in testcase
     # NOTE: seed files are not marked with "+cov"
     # even though it contains new coverage
     score2 = "orig:" in testcase
@@ -40,7 +42,7 @@ def get_score(testcase):
     score3 = -os.path.getsize(testcase)
     # Since name contains id, so later generated one will be chosen earlier
     score4 = testcase
-    return (score1, score2, score3, score4)
+    return (score0 ,score1, score2, score3, score4)
 
 def testcase_compare(a, b):
     a_score = get_score(a)
@@ -117,7 +119,7 @@ class AFLExecutorState(object):
         return len(self.processed) + len(self.hang) + len(self.done)
 
 class AFLExecutor(object):
-    def __init__(self, cmd, output, afl, name, filename=None, mail=None, asan_bin=None):
+    def __init__(self, cmd, output, afl, name, filename=None, mail=None, asan_bin=None, cfg=None):
         self.cmd = cmd
         self.output = output
         self.afl = afl
@@ -125,9 +127,19 @@ class AFLExecutor(object):
         self.filename = ".cur_input" if filename is None else filename
         self.mail = mail
         self.set_asan_cmd(asan_bin)
+        self.cfg = cfg
 
         self.tmp_dir = tempfile.mkdtemp()
         cmd, afl_path, qemu_mode = self.parse_fuzzer_stats()
+
+        # Becasue of the differences of environment, labyrinth and QSYM cannot be run in same environment.
+        # For convenience, all experiment will run in docker.
+        # So deduplication of new testcases will be carried out by origin AFL.
+        afl_path = "/afl"
+        string = cmd[0]
+        string = string.replaec("laby", "afl")
+        cmd[0] = string
+        
         self.minimizer = minimizer.TestcaseMinimizer(
             cmd, afl_path, self.output, qemu_mode)
         self.import_state()
@@ -220,7 +232,7 @@ class AFLExecutor(object):
 
     def run_target(self):
         # Trigger linearlize to remove complicate expressions
-        q = executor.Executor(self.cmd, self.cur_input, self.tmp_dir, bitmap=self.bitmap, argv=["-l", "1"])
+        q = executor.Executor(self.cmd, self.cur_input, self.tmp_dir, bitmap=self.bitmap, argv=["-l", "1"], cfg=self.cfg)
         ret = q.run(self.state.timeout)
         logger.debug("Total=%d s, Emulation=%d s, Solver=%d s, Return=%d"
                      % (ret.total_time,

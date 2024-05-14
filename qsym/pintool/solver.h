@@ -13,6 +13,7 @@
 #include "expr.h"
 #include "thread_context.h"
 #include "dependency.h"
+#include "cfg.h"
 
 namespace qsym {
 
@@ -27,7 +28,8 @@ public:
   Solver(
       const std::string input_file,
       const std::string out_dir,
-      const std::string bitmap);
+      const std::string bitmap,
+      const std::string cfg);
 
   void push();
   void reset();
@@ -45,6 +47,7 @@ public:
   UINT8 getInput(ADDRINT index);
 
   ADDRINT last_pc() { return last_pc_; }
+  void setBBFirstAddr(ADDRINT first_addr);
 
 protected:
   std::string           input_file_;
@@ -61,6 +64,8 @@ protected:
   uint64_t              solving_time_;
   ADDRINT               last_pc_;
   DependencyForest<Expr> dep_forest_;
+  CFG                   cfg_;
+  ADDRINT               cur_bb_first_addr_;
 
   void checkOutDir();
   void readInput();

@@ -43,12 +43,13 @@ class ExecutorResult(object):
 
 class Executor(object):
     def __init__(self, cmd, input_file, output_dir,
-            bitmap=None, argv=None):
+            bitmap=None, argv=None, cfg=None):
         self.cmd = cmd
         self.input_file = input_file
         self.output_dir = output_dir
         self.bitmap = bitmap
         self.argv = [] if argv is None else argv
+        self.cfg = cfg
 
         self.testcase_dir = self.get_testcase_dir()
         self.set_opts()
@@ -100,6 +101,10 @@ class Executor(object):
 
         if self.bitmap:
             cmd += ["-b", self.bitmap]
+        if self.cfg:
+            cmd += ["-z", self.cfg]
+        # cmd += ["-d", "1"]
+        # "-d" is the debug mode command for PIN tool
         return cmd + ["--"] + self.cmd
 
     def run(self, timeout=None):
